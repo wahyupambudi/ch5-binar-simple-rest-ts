@@ -1,4 +1,5 @@
 import{Router, Request, Response} from "express";
+import {v4 as uuidv4} from 'uuid';
 import {cars} from "../__data_mocks__/cars";
 import filterCars from "../utils/filter";
 
@@ -49,7 +50,37 @@ router.put("/:id", (req: Request, res: Response) => {
         message: "Data Updated Successfully",
         cars: filterUpdatedCar
     })
+})
 
+router.delete("/:id", (req: Request, res: Response) => {
+    const getId = Number(req.params.id);
+
+    const filterById = cars.filter(({id}) => id !== getId);
+
+    res.status(200).json({
+        status: "OK",
+        message: "Item successfully deleted",
+        cars: filterById
+    })
+})
+
+router.post("/create", (req: Request, res: Response) => {
+    const {name, price, startRent, finishRent} = req.body;
+    const newObj = {
+        id: uuidv4(),
+        name,
+        price,
+        startRent,
+        finishRent,
+        createdAt: "05/14/2024",
+        updatedAt: new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
+    }
+
+    res.status(201).json({
+        status: "OK",
+        message: "Item Successfully created",
+        data: newObj
+    })
 })
 
 export default router;
